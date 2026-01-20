@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/rand"
 	"crypto/rsa"
 	"testing"
@@ -21,14 +22,17 @@ func TestRS256SignParse(t *testing.T) {
 		"exp": time.Now().Add(time.Minute).Unix(),
 	}
 
-	signed, err := SignRS256(privateKey, claims)
+	signer := RS256Signer{PrivateKey: privateKey}
+	parser := RS256Parser{PublicKey: &privateKey.PublicKey}
+
+	signed, err := signer.Sign(context.Background(), claims)
 	if err != nil {
-		t.Fatalf("SignRS256 error: %v", err)
+		t.Fatalf("RS256Signer.Sign error: %v", err)
 	}
 
-	parsed, err := ParseRS256(signed, &privateKey.PublicKey)
+	parsed, err := parser.Parse(signed)
 	if err != nil {
-		t.Fatalf("ParseRS256 error: %v", err)
+		t.Fatalf("RS256Parser.Parse error: %v", err)
 	}
 	if !parsed.Valid {
 		t.Fatalf("token should be valid")

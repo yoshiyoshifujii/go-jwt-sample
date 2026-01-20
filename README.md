@@ -10,9 +10,11 @@ Minimal examples for signing and verifying JWTs using github.com/golang-jwt/jwt/
 
 ## Files
 
-- `hs256.go`: HS256 sign/parse helpers
-- `rs256.go`: RS256 sign/parse helpers
-- `ps256.go`: PS256 sign/parse helpers
+- `jwt_interfaces.go`: signer/parser interfaces
+- `hs256.go`: HS256 signer/parser
+- `rs256.go`: RS256 signer/parser
+- `ps256.go`: PS256 signer/parser
+- `kms_ps256.go`: KMS-backed PS256 signer and public key fetcher
 - `*_test.go`: tests for each algorithm
 
 ## Run
@@ -29,5 +31,15 @@ go test ./...
 
 ## Notes
 
-- The Parse helpers verify the expected signing method before returning the key.
+- The parsers verify the expected signing method before returning the key.
 - RS256 and PS256 both use RSA keys; the difference is the padding scheme used during signing.
+
+## Example
+
+```go
+signer := PS256Signer{PrivateKey: privateKey}
+parser := PS256Parser{PublicKey: &privateKey.PublicKey}
+
+token, err := signer.Sign(context.Background(), claims)
+parsed, err := parser.Parse(token)
+```

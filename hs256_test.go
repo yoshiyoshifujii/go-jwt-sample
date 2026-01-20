@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -15,14 +16,17 @@ func TestHS256SignParse(t *testing.T) {
 		"exp": time.Now().Add(time.Minute).Unix(),
 	}
 
-	signed, err := SignHS256(secret, claims)
+	signer := HS256Signer{Secret: secret}
+	parser := HS256Parser{Secret: secret}
+
+	signed, err := signer.Sign(context.Background(), claims)
 	if err != nil {
-		t.Fatalf("SignHS256 error: %v", err)
+		t.Fatalf("HS256Signer.Sign error: %v", err)
 	}
 
-	parsed, err := ParseHS256(signed, secret)
+	parsed, err := parser.Parse(signed)
 	if err != nil {
-		t.Fatalf("ParseHS256 error: %v", err)
+		t.Fatalf("HS256Parser.Parse error: %v", err)
 	}
 	if !parsed.Valid {
 		t.Fatalf("token should be valid")
