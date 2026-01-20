@@ -1,4 +1,4 @@
-package main
+package gojwt
 
 import (
 	"context"
@@ -30,7 +30,7 @@ func TestRS256SignParse(t *testing.T) {
 		t.Fatalf("RS256Signer.Sign error: %v", err)
 	}
 
-	parsed, err := parser.Parse(signed)
+	parsed, err := parser.Parse(context.Background(), signed)
 	if err != nil {
 		t.Fatalf("RS256Parser.Parse error: %v", err)
 	}

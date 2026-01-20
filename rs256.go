@@ -1,4 +1,4 @@
-package main
+package gojwt
 
 import (
 	"context"
@@ -23,7 +23,7 @@ func (s RS256Signer) Sign(_ context.Context, claims jwt.Claims) (string, error) 
 	return token.SignedString(s.PrivateKey)
 }
 
-func (p RS256Parser) Parse(tokenString string) (*jwt.Token, error) {
+func (p RS256Parser) Parse(_ context.Context, tokenString string) (*jwt.Token, error) {
 	return jwt.Parse(tokenString, func(t *jwt.Token) (any, error) {
 		if t.Method != jwt.SigningMethodRS256 {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])

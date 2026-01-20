@@ -1,4 +1,4 @@
-package main
+package gojwt
 
 import (
 	"context"
@@ -12,6 +12,6 @@ type (
 	}
 
 	JWTParser interface {
-		Parse(tokenString string) (*jwt.Token, error)
+		Parse(ctx context.Context, tokenString string) (*jwt.Token, error)
 	}
 )

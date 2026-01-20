@@ -27,6 +27,10 @@ go run .
 # run tests
 
 go test ./...
+
+# run integration tests (requires Docker)
+
+go test ./test/integration/...
 ```
 
 ## Notes
@@ -41,5 +45,16 @@ signer := PS256Signer{PrivateKey: privateKey}
 parser := PS256Parser{PublicKey: &privateKey.PublicKey}
 
 token, err := signer.Sign(context.Background(), claims)
-parsed, err := parser.Parse(token)
+parsed, err := parser.Parse(context.Background(), token)
+```
+
+KMS example (PS256 with RSASSA_PSS_SHA_256):
+
+```go
+service := KMSService{Client: kmsClient, KeyID: "arn:aws:kms:..."}
+signer := KMSPS256Signer{Service: service}
+parser := KMSPS256Parser{Service: service}
+
+token, err := signer.Sign(context.Background(), claims)
+parsed, err := parser.Parse(context.Background(), token)
 ```
